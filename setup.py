@@ -9,8 +9,7 @@ setuptools.setup(
     description="Utilities such as dataclasses and logger for amplec",
     long_description=long_description,
     install_requires=[
-        'requests',
-        'inspect'
+        'requests'
     ],
     long_description_content_type="text/markdown",
     url="https://github.com/amplec/utils",
