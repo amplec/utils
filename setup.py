@@ -14,4 +14,4 @@ setuptools.setup(
     ],
     long_description_content_type="text/markdown",
     url="https://github.com/amplec/utils",
-    packages=["utils"])
+    packages=["amplec_utils"])
