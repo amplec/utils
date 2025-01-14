@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="utils",
-    version="0.1",
+    version="0.2",
     description="Utilities such as dataclasses and logger for amplec",
     long_description=long_description,
     install_requires=[
