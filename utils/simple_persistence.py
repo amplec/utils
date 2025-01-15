@@ -1,4 +1,5 @@
-import json, datetime
+import json
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from utils import Logger
 
@@ -73,9 +74,7 @@ class SimplePersistence:
                 f.write(line + "\n")
 
         metadata = self._load_metadata()
-        metadata[submission_id] = {
-            "date_indexed": datetime.datetime.utcnow().isoformat()
-        }
+        metadata[submission_id] = {"date_indexed": datetime.now(timezone.utc).isoformat()}
         self._save_metadata(metadata)
         
         self.cleanup_submissions()
@@ -146,7 +145,7 @@ class SimplePersistence:
         """
         self.logger.info(f"Cleaning up submissions older than {older_than_days} days...")
         metadata = self._load_metadata()
-        cutoff_date = datetime.datetime.utcnow() - datetime.timedelta(days=older_than_days)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=older_than_days)
 
         to_delete = []
 
@@ -160,7 +159,7 @@ class SimplePersistence:
                 continue
 
             try:
-                date_indexed = datetime.datetime.fromisoformat(date_str)
+                date_indexed = datetime.fromisoformat(date_str)
             except ValueError as e:
                 self.logger.warning(
                     f"Cannot parse date for '{submission_id}' (value: {date_str}). Error: {e}"
