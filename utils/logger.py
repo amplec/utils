@@ -1,25 +1,35 @@
 import inspect
+from typing import Optional
+from elasticsearch import Elasticsearch
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 class Logger:
     """
     This class will implement a custom logger for the AMPLEC project.
     """
     
-    def __init__(self, mode:str, file_path:str=None) -> None:
+    def __init__(self, mode:str, elastic_url:str, elastic_key:str, elastic_index:Optional[str]="amplec_logs") -> None:
         """
         Constructor for the Logger-class
-        :param mode: mode of the logger, can be 'console', 'file' or 'dual'
+        :param mode: mode of the logger, can be 'console', 'elastic' or 'dual'
         :type mode: str
-        :param file_path: path to the file where the logs should be written to
-        :type file_path: str
+        :param elastic_url: URL to the ElasticSearch instance
+        :type elastic_url: str
+        :param elastic_key: API key for the ElasticSearch instance
+        :type elastic_key: str
+        :param elastic_index: Index in the ElasticSearch instance
+        :type elastic_index: str
         """
-        if mode not in ["console", "file", "dual"]:
-            raise ValueError("Mode must be 'console', 'file' or 'dual'")
-        if mode != "console" and not file_path:
-            raise ValueError("File path must be provided if mode is not 'console'")
+        if mode not in ["console", "elastic", "dual"]:
+            raise ValueError("Mode must be 'console', 'elastic' or 'dual'")
+        if mode != "console" and not (elastic_url and elastic_key):
+            raise ValueError("Elastic parameters need to be provided if mode is not 'console'")
         
         self.mode = mode
-        self.file_path = file_path
+        self.elastic_url = elastic_url
+        self.elastic_key = elastic_key
+        self.elastic_index = elastic_index
     
     
     def _log(self, message:str, level:str) -> None:
@@ -34,9 +44,8 @@ class Logger:
         
         if self.mode in ["console", "dual"]:
             print(f"{level.upper()}: {message}, {call_tree}")
-        if self.mode in ["file", "dual"]:
-            with open(self.file_path, "a") as f:
-                f.write(f"{level.upper()}: {message}, {call_tree}\n")
+        if self.mode in ["elastic", "dual"]:
+            Elasticsearch(self.elastic_url, api_key=self.elastic_key).index(index=self.elastic_index, body={"message": message, "level": level, "call_tree": call_tree, "ts": datetime.now(ZoneInfo("Europe/Berlin")).strftime("%Y-%m-%dT%H:%M:%S%z")})
         
     
     def info(self, message:str) -> None:
@@ -89,6 +98,8 @@ class Logger:
             func_name = frame_info.function
             class_name = frame.f_locals.get('self', None).__class__.__name__ if 'self' in frame.f_locals else None
             # Skip frames from the logger itself
+            if func_name == "<module>" or class_name == "<module>":
+                continue
             if class_name == self.__class__.__name__:
                 continue
             if class_name:
