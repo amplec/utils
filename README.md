@@ -5,26 +5,31 @@ The `utils` repository of the `amplec` organisation houses all the utilities, sh
 
 ### Logger Class
 
-The `Logger` class provides a custom logging implementation tailored for the AMPLEC project. It shares functional similarities with Python's built-in `logging.Logger` but offers a simplified design with added custom behavior like tracking the call hierarchy. This class is subject to change as the AMPLEC project evolves.
+The `Logger` class provides a custom logging implementation tailored for the AMPLEC project. It shares functional similarities with Python's built-in `logging.Logger` but offers a simplified design with added custom behavior, such as tracking the call hierarchy. This class is subject to change as the AMPLEC project evolves.
 
 #### Key Features and Differences from `logging.Logger`
-1. **Logging Modes**:
-   - Supports three modes: `console`, `file`, and `dual` (both console and file), which must be explicitly set during initialization.
-   - Requires a file path for `file` and `dual` modes, unlike `logging.Logger`, which uses configurable handlers.
 
-2. **Call Hierarchy Tracking**:
-   - Includes a `_get_call_tree` method that appends the call hierarchy to log messages, providing insights into the execution path. This is not present in `logging.Logger`.
+1. **Logging Modes**  
+   - Supports three modes: `console`, `elastic`, and `dual` (both console and ElasticSearch).  
+   - If the mode is `elastic` or `dual`, an ElasticSearch URL and API key must be provided.  
+   - This differs from `logging.Logger`, which uses configurable handlers (e.g., file handlers, stream handlers) to manage outputs.
 
-3. **Simplified Log Levels**:
-   - Supports `info`, `warning`, `error`, and `debug` levels, similar to `logging.Logger`.
+2. **Call Hierarchy Tracking**  
+   - Includes a `_get_call_tree` method that appends the call hierarchy to log messages, providing insights into the execution path.  
+   - This feature is not present in `logging.Logger`.
+
+3. **Simplified Log Levels**  
+   - Supports `info`, `warning`, `error`, and `debug`.  
    - No built-in configurability for additional levels, handlers, or formatting options.
 
-4. **Output Behavior**:
-   - Directly prints to the console or appends to a file, whereas `logging.Logger` uses handlers for more granular control over outputs.
+4. **Output Behavior**  
+   - Directly prints to the console, indexes into an ElasticSearch instance, or does both, depending on the selected mode.  
+   - This differs from `logging.Logger`, which relies on handlers for more granular control over outputs.
 
 #### Limitations
-- Lack of advanced features like log rotation, custom formatters, and third-party integrations provided by `logging.Logger`.
-- Static implementation of log levels and output formats.
+
+- Does not support advanced features like log rotation, custom formatters, or third-party integrations available in `logging.Logger`.  
+- Log levels and output formats are statically implemented.
 
 ### SimplePersistence Class
 
