@@ -98,9 +98,11 @@ class Logger:
             func_name = frame_info.function
             class_name = frame.f_locals.get('self', None).__class__.__name__ if 'self' in frame.f_locals else None
             # Skip frames from the logger itself
-            if func_name == "<module>" or class_name == "<module>":
+            if func_name in ["<module>","translate_proxy_headers"] or class_name == "<module>":
                 continue
             if class_name == self.__class__.__name__:
+                continue
+            if class_name in ["Thread","ThreadedTaskDispatcher", "HTTPChannel", "WSGITask", "Flask"]:
                 continue
             if class_name:
                 call_hierarchy.append(f"{class_name}.{func_name}")
