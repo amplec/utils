@@ -102,7 +102,7 @@ class Logger:
                 continue
             if class_name == self.__class__.__name__:
                 continue
-            if class_name in ["Thread","ThreadedTaskDispatcher", "HTTPChannel", "WSGITask", "Flask"]:
+            if class_name in ["Thread","ThreadedTaskDispatcher", "HTTPChannel", "WSGITask", "Flask", "StructuredTool"]:
                 continue
             if class_name:
                 call_hierarchy.append(f"{class_name}.{func_name}")
