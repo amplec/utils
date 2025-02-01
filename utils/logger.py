@@ -9,7 +9,7 @@ class Logger:
     This class will implement a custom logger for the AMPLEC project.
     """
     
-    def __init__(self, mode:str, elastic_url:str, elastic_key:str, elastic_index:Optional[str]="amplec_logs") -> None:
+    def __init__(self, mode:str, elastic_url:Optional[str] = None, elastic_key:Optional[str] = None, elastic_index:Optional[str]="amplec_logs") -> None:
         """
         Constructor for the Logger-class
         :param mode: mode of the logger, can be 'console', 'elastic' or 'dual'
